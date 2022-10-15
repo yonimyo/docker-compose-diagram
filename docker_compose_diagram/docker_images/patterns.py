@@ -7,6 +7,11 @@ from diagrams.onprem.inmemory import Redis
 from diagrams.onprem.network import Nginx, Traefik, Caddy
 from diagrams.onprem.queue import Celery, Kafka
 from diagrams.onprem.queue import RabbitMQ
+from diagrams.digitalocean.network import LoadBalancer
+from diagrams.generic.place import Datacenter
+
+from diagrams.digitalocean.network import Domain
+
 from diagrams.programming.framework import Django, Flask, Rails, React, Vue, FastAPI
 from diagrams.programming.language import (
     Python,
@@ -44,9 +49,19 @@ class NginxImage(DockerImagePattern):
     diagram_render_class = Nginx
 
 
+class DatacenterImage(DockerImagePattern):
+    pattern = r'vault'
+    diagram_render_class = Datacenter
+
+
 class PythonImage(DockerImagePattern):
     pattern = r'python'
     diagram_render_class = Python
+
+
+class LoadBalancerImage(DockerImagePattern):
+    pattern = r'lb'
+    diagram_render_class = LoadBalancer
 
 
 class MysqlImage(DockerImagePattern):

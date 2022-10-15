@@ -13,15 +13,15 @@ DEFAULT_ICON_CLASS = Rack
 
 def read_dockerfile_image(service_info):
     build = service_info.get('build', {})
-    context = build.get('context')
-    if context is None:
-        return None
-
-    dockerfile_path = build.get('dockerfile')
-    if dockerfile_path is None:
-        dockerfile_path = path.join(context, 'Dockerfile')
+    if isinstance(build, str):
+        dockerfile_path = path.join(build, 'Dockerfile')
     else:
-        dockerfile_path = path.join(context, dockerfile_path)
+        context = build.get('context')
+        dockerfile_path = build.get('dockerfile', None)
+        if dockerfile_path is None:
+            dockerfile_path = path.join(context, 'Dockerfile')
+        else:
+            dockerfile_path = path.join(context, dockerfile_path)
 
     dfp = DockerfileParser()
     with open(dockerfile_path, 'r') as file:
@@ -31,7 +31,7 @@ def read_dockerfile_image(service_info):
 
 
 def determine_image_name(
-        service_info: Dict[str, Any],
+    service_info: Dict[str, Any],
 ) -> Optional[str]:
     image_name = service_info.get('image')
     if image_name is None:
@@ -41,7 +41,7 @@ def determine_image_name(
 
 
 def determine_diagram_render_class(
-        image_name: str,
+    image_name: str,
 ) -> Union[Type[DockerImagePattern], Type[Node]]:
     if image_name is None:
         return DEFAULT_ICON_CLASS
